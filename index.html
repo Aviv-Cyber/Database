@@ -36,10 +36,10 @@
             transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.8s ease, text-shadow 0.8s ease;
         }
 
-        /* מאפשר הקלדה ובחירת טקסט בתוך שדה הקלט */
         input {
-            user-select: text;
-            -webkit-user-select: text;
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            touch-action: auto !important;
         }
     </style>
 </head>
@@ -47,31 +47,31 @@
 
     <canvas id="canvas"></canvas>
 
-    <!-- כיתוב מרכזי + תיבת שליחת נתונים -->
-    <div id="logo-container" class="pointer-events-none absolute inset-0 flex items-center justify-center z-10 px-4">
-        <div class="relative flex flex-col items-center">
+    <!-- כיתוב DATABASE מרכזי + תיבת שליחה -->
+    <div id="logo-container" class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center z-20 px-4">
+        <div class="flex flex-col items-center">
             <h1 id="center-logo" dir="ltr" class="text-5xl sm:text-7xl md:text-8xl font-bold tracking-[0.28em] text-cyan-200/80 select-none" style="text-shadow: 0 0 30px rgba(34, 211, 238, 0.45);">
                 DATABASE
             </h1>
             <div id="logo-line" class="h-[2px] w-24 sm:w-36 mt-3 rounded-full bg-cyan-400/60 transition-all duration-500 shadow-[0_0_12px_#22d3ee]"></div>
 
-            <!-- תיבת שליחה קטנה וצפה -->
-            <form id="db-form" class="pointer-events-auto mt-7 flex items-center gap-2 p-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/15 shadow-2xl w-72 sm:w-80 transition-all focus-within:border-white/35">
+            <!-- תיבת קלט לשליחת נתונים -->
+            <form id="db-form" class="pointer-events-auto mt-8 flex items-center gap-2 p-1.5 rounded-full bg-slate-900/75 backdrop-blur-md border border-cyan-400/40 shadow-[0_0_25px_rgba(34,211,238,0.2)] w-80 sm:w-96 transition-all focus-within:border-cyan-300">
                 <input 
                     id="db-input" 
                     type="text" 
-                    placeholder="הזן טקסט לשמירה..." 
+                    placeholder="הקלד נתון לשמירה בריפו..." 
                     autocomplete="off"
-                    class="bg-transparent text-white placeholder-white/40 text-sm px-3.5 py-1.5 w-full outline-none"
+                    class="bg-transparent text-white placeholder-slate-400 text-sm px-4 py-2 w-full outline-none"
                 />
                 <button 
                     id="db-submit" 
                     type="submit" 
-                    class="px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-cyan-400/20 text-cyan-100 hover:bg-cyan-400/35 active:scale-95 transition-all cursor-pointer shrink-0">
+                    class="px-5 py-2 rounded-full text-xs sm:text-sm font-semibold bg-cyan-500/30 text-cyan-100 border border-cyan-400/40 hover:bg-cyan-500/50 active:scale-95 transition-all cursor-pointer shrink-0">
                     שלח
                 </button>
             </form>
-            <span id="db-status" class="mt-2.5 text-xs text-white/60 h-4 transition-opacity duration-300 opacity-0"></span>
+            <div id="db-status" class="mt-2.5 text-xs font-medium text-cyan-300 h-5 transition-opacity duration-300 opacity-0"></div>
         </div>
     </div>
 
@@ -161,7 +161,6 @@
                 
                 dbInput.value = '';
                 showStatus('נשלח ל-data.json ✓');
-                // אפקט אדווה חגיגי במרכז המסך
                 triggerInteraction(width / 2, height / 2, false);
             } catch (err) {
                 console.error(err);
@@ -173,7 +172,7 @@
         });
 
         // ==========================================
-        // 3. קוד האנימציה והאדוות הקיים
+        // 3. קוד האנימציה והאדוות
         // ==========================================
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -227,7 +226,6 @@
             }
         ];
         let currentThemeIndex = 0;
-
         const pentatonicNotes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
 
         function resize() {
@@ -500,9 +498,10 @@
             logoLine.style.backgroundColor = newTheme.dotColor;
             logoLine.style.boxShadow = `0 0 12px ${newTheme.dotColor}`;
             
-            // התאמת צבע כפתור השליחה לערכת הנושא
+            dbForm.style.borderColor = `${newTheme.dotColor}66`;
             dbSubmit.style.color = newTheme.logoColor;
             dbSubmit.style.backgroundColor = `${newTheme.dotColor}33`;
+            dbSubmit.style.borderColor = `${newTheme.dotColor}66`;
 
             particles.forEach(p => {
                 if (!p.isBurst) {
