@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DATABASE</title>
-    <!-- טעינת Tailwind CSS לעיצוב ממשק המשתמש הצף -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- טעינת גופן Heebo לעברית נקייה ומודרנית ו-Space Grotesk לכיתוב DATABASE -->
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        /* הגדרות בסיס למניעת גלילה ובחירת טקסט בזמן משחק/נגיעה */
         * {
             box-sizing: border-box;
             user-select: none;
@@ -25,7 +22,7 @@
             overflow: hidden;
             background-color: #050811;
             font-family: 'Heebo', sans-serif;
-            touch-action: none; /* מונע זום וגלילה במובייל בזמן החלקת אצבע */
+            touch-action: none;
         }
 
         canvas {
@@ -34,38 +31,57 @@
             height: 100%;
         }
 
-        /* עיצוב ותגובתיות של הכיתוב המרכזי DATABASE */
         #center-logo {
             font-family: 'Space Grotesk', sans-serif;
             transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.8s ease, text-shadow 0.8s ease;
+        }
+
+        /* מאפשר הקלדה ובחירת טקסט בתוך שדה הקלט */
+        input {
+            user-select: text;
+            -webkit-user-select: text;
         }
     </style>
 </head>
 <body class="relative text-white">
 
-    <!-- קנבס ראשי לאנימציה -->
     <canvas id="canvas"></canvas>
 
-    <!-- כיתוב DATABASE מרכזי מעוצב שמגיב לנגיעות ולשינויי אווירה -->
+    <!-- כיתוב מרכזי + תיבת שליחת נתונים -->
     <div id="logo-container" class="pointer-events-none absolute inset-0 flex items-center justify-center z-10 px-4">
         <div class="relative flex flex-col items-center">
             <h1 id="center-logo" dir="ltr" class="text-5xl sm:text-7xl md:text-8xl font-bold tracking-[0.28em] text-cyan-200/80 select-none" style="text-shadow: 0 0 30px rgba(34, 211, 238, 0.45);">
                 DATABASE
             </h1>
             <div id="logo-line" class="h-[2px] w-24 sm:w-36 mt-3 rounded-full bg-cyan-400/60 transition-all duration-500 shadow-[0_0_12px_#22d3ee]"></div>
+
+            <!-- תיבת שליחה קטנה וצפה -->
+            <form id="db-form" class="pointer-events-auto mt-7 flex items-center gap-2 p-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/15 shadow-2xl w-72 sm:w-80 transition-all focus-within:border-white/35">
+                <input 
+                    id="db-input" 
+                    type="text" 
+                    placeholder="הזן טקסט לשמירה..." 
+                    autocomplete="off"
+                    class="bg-transparent text-white placeholder-white/40 text-sm px-3.5 py-1.5 w-full outline-none"
+                />
+                <button 
+                    id="db-submit" 
+                    type="submit" 
+                    class="px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-cyan-400/20 text-cyan-100 hover:bg-cyan-400/35 active:scale-95 transition-all cursor-pointer shrink-0">
+                    שלח
+                </button>
+            </form>
+            <span id="db-status" class="mt-2.5 text-xs text-white/60 h-4 transition-opacity duration-300 opacity-0"></span>
         </div>
     </div>
 
-    <!-- בר שליטה צף ומינימליסטי בתחתית המסך -->
+    <!-- בר שליטה צף בתחתית המסך -->
     <div id="controls" class="z-20 absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-3 px-4 py-2.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl transition-opacity duration-500 hover:opacity-100 opacity-75">
-        
-        <!-- כפתור החלפת ערכת צבעים -->
         <button id="theme-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-white/10 hover:bg-white/20 active:scale-95 transition-all cursor-pointer" title="החלף אווירה">
             <span id="theme-dot" class="w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>
             <span id="theme-name">זוהר צפוני</span>
         </button>
 
-        <!-- כפתור מצב טיפות גשם אוטומטיות (שומר מסך) -->
         <button id="auto-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-cyan-500/20 text-cyan-200 border border-cyan-500/30 hover:bg-cyan-500/30 active:scale-95 transition-all cursor-pointer" title="טיפות אוטומטיות">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
@@ -73,14 +89,11 @@
             <span>גשם: פעיל</span>
         </button>
 
-        <!-- כפתור סאונד (Web Audio API מובנה ללא צורך בקבצים חיצוניים) -->
         <button id="sound-btn" class="p-2 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition-all text-slate-300 cursor-pointer" title="הפעל/השתק צלילים">
-            <!-- אייקון מושתק כברירת מחדל -->
             <svg id="sound-icon-off" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
             </svg>
-            <!-- אייקון פעיל -->
             <svg id="sound-icon-on" class="w-4 h-4 hidden text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
             </svg>
@@ -88,17 +101,85 @@
     </div>
 
     <script>
-        /**
-         * אדוות אור - שומר מסך אינטראקטיבי
-         * משלב אפקט אדוות מים, חלקיקי אור מרחפים, וסאונד פנטטוני עדין
-         */
+        // ==========================================
+        // 1. הגדרות חיבור לריפו הפרטי (הדבק כאן)
+        // ==========================================
+        const GITHUB_CONFIG = {
+            OWNER: "aviv-cyber",
+            REPO: "Database_Backend",
+            TOKEN: "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"
+        };
 
+        async function saveToPrivateDB(dataToSave) {
+            const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.OWNER}/${GITHUB_CONFIG.REPO}/dispatches`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${GITHUB_CONFIG.TOKEN}`,
+                    "Accept": "application/vnd.github+json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    event_type: "add-data",
+                    client_payload: dataToSave
+                })
+            });
+
+            if (response.status !== 204) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+        }
+
+        // ==========================================
+        // 2. ניהול טופס השליחה
+        // ==========================================
+        const dbForm = document.getElementById('db-form');
+        const dbInput = document.getElementById('db-input');
+        const dbSubmit = document.getElementById('db-submit');
+        const dbStatus = document.getElementById('db-status');
+
+        function showStatus(msg, isError = false) {
+            dbStatus.textContent = msg;
+            dbStatus.style.color = isError ? '#fb7185' : '#a5f3fc';
+            dbStatus.style.opacity = '1';
+            setTimeout(() => { dbStatus.style.opacity = '0'; }, 3500);
+        }
+
+        dbForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const value = dbInput.value.trim();
+            if (!value) return;
+
+            dbSubmit.disabled = true;
+            dbSubmit.textContent = '...';
+
+            try {
+                await saveToPrivateDB({
+                    message: value,
+                    theme: themes[currentThemeIndex].name,
+                    time: new Date().toISOString()
+                });
+                
+                dbInput.value = '';
+                showStatus('נשלח ל-data.json ✓');
+                // אפקט אדווה חגיגי במרכז המסך
+                triggerInteraction(width / 2, height / 2, false);
+            } catch (err) {
+                console.error(err);
+                showStatus('שגיאה בשליחה — בדוק טוקן/הגדרות', true);
+            } finally {
+                dbSubmit.disabled = false;
+                dbSubmit.textContent = 'שלח';
+            }
+        });
+
+        // ==========================================
+        // 3. קוד האנימציה והאדוות הקיים
+        // ==========================================
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const centerLogo = document.getElementById('center-logo');
         const logoLine = document.getElementById('logo-line');
 
-        // משתני מצב גלובליים
         let width, height;
         let ripples = [];
         let particles = [];
@@ -107,7 +188,6 @@
         let audioCtx = null;
         let logoPulseTimeout = null;
 
-        // ערכות נושא (צבעי רקע, אדוות וחלקיקים)
         const themes = [
             {
                 name: 'זוהר צפוני',
@@ -148,12 +228,8 @@
         ];
         let currentThemeIndex = 0;
 
-        // תדרים של סולם פנטטוני מרגיע (C Major Pentatonic)
         const pentatonicNotes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
 
-        /**
-         * התאמת גודל הקנבס למסך בצורה רספונסיבית (כולל מסכי Retina/DPI גבוה)
-         */
         function resize() {
             const dpr = window.devicePixelRatio || 1;
             width = window.innerWidth;
@@ -165,9 +241,6 @@
         window.addEventListener('resize', resize);
         resize();
 
-        /**
-         * מחלקת אדווה (Ripple) - מעגלי אור מתרחבים ונעלמים בהדרגה
-         */
         class Ripple {
             constructor(x, y, maxRadius = null, isDrag = false) {
                 this.x = x;
@@ -183,7 +256,6 @@
 
             update() {
                 this.radius += this.speed;
-                // האטה הדרגתית ככל שהאדווה גדלה לתחושה טבעית של מים
                 this.speed *= 0.985;
                 const progress = this.radius / this.maxRadius;
                 this.alpha = Math.max(0, (1 - progress) * 0.85);
@@ -192,8 +264,6 @@
             draw() {
                 if (this.alpha <= 0.01) return;
                 ctx.save();
-                
-                // טבעת חיצונית זוהרת
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.strokeStyle = this.color;
@@ -203,7 +273,6 @@
                 ctx.shadowColor = this.color;
                 ctx.stroke();
 
-                // טבעת פנימית עדינה ליצירת עומק של אדווה כפולה
                 if (this.radius > 18) {
                     ctx.beginPath();
                     ctx.arc(this.x, this.y, this.radius * 0.65, 0, Math.PI * 2);
@@ -211,14 +280,10 @@
                     ctx.lineWidth = this.lineWidth * 0.6;
                     ctx.stroke();
                 }
-
                 ctx.restore();
             }
         }
 
-        /**
-         * מחלקת חלקיק אור (Particle) - ניצוצות עדינים ברקע ובזמן נגיעה
-         */
         class Particle {
             constructor(x, y, isBurst = false) {
                 this.x = x ?? Math.random() * width;
@@ -244,7 +309,6 @@
                     this.vy *= 0.96;
                     this.alpha -= this.decay;
                 } else {
-                    // החזרה לצד השני של המסך עבור חלקיקי האווירה הקבועים
                     if (this.x < 0) this.x = width;
                     if (this.x > width) this.x = 0;
                     if (this.y < 0) this.y = height;
@@ -266,7 +330,6 @@
             }
         }
 
-        // אתחול חלקיקי רקע מרחפים לאווירה רגועה
         function initAmbientParticles() {
             particles = [];
             const count = Math.min(45, Math.floor((width * height) / 22000));
@@ -276,9 +339,6 @@
         }
         initAmbientParticles();
 
-        /**
-         * סינתיסייזר צלילי מים עדינים (Web Audio API)
-         */
         function playWaterChime(xRatio) {
             if (!soundEnabled) return;
             try {
@@ -292,7 +352,6 @@
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
 
-                // בחירת תו לפי מיקום הנגיעה לרוחב המסך
                 const noteIndex = Math.min(
                     pentatonicNotes.length - 1,
                     Math.max(0, Math.floor((xRatio / width) * pentatonicNotes.length))
@@ -301,7 +360,6 @@
 
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                // החלקת תדר קלה המדמה טיפת מים
                 osc.frequency.exponentialRampToValueAtTime(freq * 1.015, audioCtx.currentTime + 0.15);
 
                 gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
@@ -313,17 +371,11 @@
 
                 osc.start();
                 osc.stop(audioCtx.currentTime + 1.45);
-            } catch (e) {
-                // התעלמות שקטה במידה והדפדפן חוסם אודיו
-            }
+            } catch (e) {}
         }
 
-        /**
-         * תגובה ויזואלית של הכיתוב DATABASE בעת נגיעה או שינוי
-         */
         function pulseCenterLogo(x, y, isDrag = false) {
             const theme = themes[currentThemeIndex];
-            // חישוב הטיה קלה לכיוון הנגיעה לתחושת תלת-ממד ועומק
             const offsetX = ((x / width) - 0.5) * (isDrag ? 10 : 18);
             const offsetY = ((y / height) - 0.5) * (isDrag ? 10 : 18);
             const scale = isDrag ? 1.03 : 1.08;
@@ -341,15 +393,10 @@
             }, 350);
         }
 
-        /**
-         * יצירת אינטראקציה בנקודה מסוימת (אדווה + ניצוצות + צליל)
-         */
         function triggerInteraction(x, y, isDrag = false) {
             pulseCenterLogo(x, y, isDrag);
-
             ripples.push(new Ripple(x, y, isDrag ? 80 : null, isDrag));
 
-            // יצירת ניצוצות אור קטנים
             const burstCount = isDrag ? 2 : 6;
             for (let i = 0; i < burstCount; i++) {
                 particles.push(new Particle(x, y, true));
@@ -360,7 +407,6 @@
             }
         }
 
-        // ניהול אירועי עכבר וטאץ' (מולטי-טאץ' מלא!)
         let isMouseDown = false;
         let lastDragTime = 0;
 
@@ -372,17 +418,14 @@
         canvas.addEventListener('mousemove', (e) => {
             if (!isMouseDown) return;
             const now = Date.now();
-            if (now - lastDragTime > 35) { // הגבלת קצב לשמירה על ביצועים חלקים
+            if (now - lastDragTime > 35) {
                 triggerInteraction(e.clientX, e.clientY, true);
                 lastDragTime = now;
             }
         });
 
-        window.addEventListener('mouseup', () => {
-            isMouseDown = false;
-        });
+        window.addEventListener('mouseup', () => { isMouseDown = false; });
 
-        // תמיכה במגע (Touch) - כולל מספר אצבעות במקביל
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             for (let i = 0; i < e.changedTouches.length; i++) {
@@ -403,14 +446,9 @@
             }
         }, { passive: false });
 
-        /**
-         * לולאת האנימציה הראשית
-         */
         let lastAutoDrop = 0;
         function animate(timestamp) {
             const theme = themes[currentThemeIndex];
-
-            // ציור רקע גרדיאנט עמוק עם אפקט שובל עדין
             const gradient = ctx.createLinearGradient(0, 0, 0, height);
             gradient.addColorStop(0, theme.bgTop);
             gradient.addColorStop(1, theme.bgBottom);
@@ -418,7 +456,6 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
 
-            // מצב שומר מסך: טיפות גשם אוטומטיות אקראיות
             if (isAutoRain && timestamp - lastAutoDrop > 900 + Math.random() * 1400) {
                 const rx = Math.random() * width;
                 const ry = Math.random() * height;
@@ -426,7 +463,6 @@
                 lastAutoDrop = timestamp;
             }
 
-            // עדכון וציור חלקיקים
             for (let i = particles.length - 1; i >= 0; i--) {
                 const p = particles[i];
                 p.update();
@@ -436,7 +472,6 @@
                 }
             }
 
-            // עדכון וציור אדוות
             for (let i = ripples.length - 1; i >= 0; i--) {
                 const r = ripples[i];
                 r.update();
@@ -449,9 +484,6 @@
             requestAnimationFrame(animate);
         }
 
-        // --- חיבור כפתורי הממשק ---
-
-        // החלפת ערכת צבעים
         const themeBtn = document.getElementById('theme-btn');
         const themeDot = document.getElementById('theme-dot');
         const themeName = document.getElementById('theme-name');
@@ -463,23 +495,23 @@
             themeDot.style.boxShadow = `0 0 8px ${newTheme.dotColor}`;
             themeName.textContent = newTheme.name;
 
-            // התאמת צבע הכיתוב DATABASE והקו שמתחתיו לערכת הנושא החדשה
             centerLogo.style.color = newTheme.logoColor;
             centerLogo.style.textShadow = `0 0 30px ${newTheme.logoGlow}`;
             logoLine.style.backgroundColor = newTheme.dotColor;
             logoLine.style.boxShadow = `0 0 12px ${newTheme.dotColor}`;
             
-            // עדכון צבעי חלקיקי הרקע הקיימים
+            // התאמת צבע כפתור השליחה לערכת הנושא
+            dbSubmit.style.color = newTheme.logoColor;
+            dbSubmit.style.backgroundColor = `${newTheme.dotColor}33`;
+
             particles.forEach(p => {
                 if (!p.isBurst) {
                     p.color = newTheme.colors[Math.floor(Math.random() * newTheme.colors.length)];
                 }
             });
-            // יצירת אדווה במרכז המסך להמחשת הצבע החדש
             triggerInteraction(width / 2, height / 2, false);
         });
 
-        // הפעלה/כיבוי של טיפות גשם אוטומטיות
         const autoBtn = document.getElementById('auto-btn');
         autoBtn.addEventListener('click', () => {
             isAutoRain = !isAutoRain;
@@ -495,7 +527,6 @@
             }
         });
 
-        // הפעלה/השתקה של הסאונד
         const soundBtn = document.getElementById('sound-btn');
         const soundIconOff = document.getElementById('sound-icon-off');
         const soundIconOn = document.getElementById('sound-icon-on');
@@ -505,14 +536,13 @@
             if (soundEnabled) {
                 soundIconOff.classList.add('hidden');
                 soundIconOn.classList.remove('hidden');
-                playWaterChime(width / 2); // השמעת צליל אישור
+                playWaterChime(width / 2);
             } else {
                 soundIconOff.classList.remove('hidden');
                 soundIconOn.classList.add('hidden');
             }
         });
 
-        // התחלת האנימציה בטעינת החלון
         window.onload = function() {
             requestAnimationFrame(animate);
         };
